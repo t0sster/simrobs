@@ -1,0 +1,19 @@
+# Python
+*.pyc
+__pycache__/
+.venv/
+venv/
+env/
+.Python
+# Dependencies
+pip-wheel-metadata/
+
+# MuJoCo-specific log files
+**/MUJOCO_LOG.TXT
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~
