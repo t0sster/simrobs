@@ -1,0 +1,73 @@
+<mujoco>
+  <option timestep="0.005" iterations="50" tolerance="1e-8"/>
+  
+  <default>
+    <joint damping="1" armature="0.1" limited="true"/>
+    <geom solimp="0.9 0.95 0.001" solref="0.02 1"/>
+    <motor ctrlrange="-1 1"/>
+  </default>
+  
+  <worldbody>
+    <light pos="0 2 3" dir="0 -1 -1"/>
+    <geom name="floor" type="plane" size="10 10 0.1" rgba="0.8 0.9 0.8 1"/>
+    
+    <!-- Торс (тело робота) -->
+    <body name="torso" pos="0 0 0.8">
+      <freejoint/>  <!-- Вместо joint type="free" -->
+      <inertial pos="0 0 0" mass="5" diaginertia="0.1 0.1 0.1"/>
+      <geom name="torso_geom" type="capsule" fromto="0 0 0 0 0 0.25" size="0.08" rgba="0.7 0.2 0.2 1"/>
+      
+      <!-- Левое бедро -->
+      <body name="thigh_left" pos="0.08 0 0">
+        <joint name="hip_left" type="hinge" pos="0 0 0" axis="1 0 0" range="-30 30"/>
+        <inertial pos="0 0 -0.2" mass="2" diaginertia="0.05 0.05 0.05"/>
+        <geom name="thigh_left_geom" type="capsule" fromto="0 0 0 0 0 -0.4" size="0.05" rgba="0.6 0.6 0.8 1"/>
+        
+        <!-- Левая голень -->
+        <body name="shin_left" pos="0 0 -0.4">
+          <joint name="knee_left" type="hinge" pos="0 0 0" axis="1 0 0" range="-60 10"/>
+          <inertial pos="0 0 -0.2" mass="1" diaginertia="0.03 0.03 0.03"/>
+          <geom name="shin_left_geom" type="capsule" fromto="0 0 0 0 0 -0.35" size="0.04" rgba="0.6 0.8 0.6 1"/>
+          
+          <!-- Левая стопа -->
+          <body name="foot_left" pos="0 0 -0.35">
+            <joint name="ankle_left" type="hinge" pos="0 0 0" axis="1 0 0" range="-20 20"/>
+            <geom name="foot_left_geom" type="capsule" fromto="-0.05 0 0 0.05 0 0" size="0.03" rgba="0.8 0.8 0.2 1"/>
+          </body>
+        </body>
+      </body>
+      
+      <!-- Правое бедро (зеркально) -->
+      <body name="thigh_right" pos="-0.08 0 0">
+        <joint name="hip_right" type="hinge" pos="0 0 0" axis="1 0 0" range="-30 30"/>
+        <inertial pos="0 0 -0.2" mass="2" diaginertia="0.05 0.05 0.05"/>
+        <geom name="thigh_right_geom" type="capsule" fromto="0 0 0 0 0 -0.4" size="0.05" rgba="0.6 0.6 0.8 1"/>
+        
+        <!-- Правая голень -->
+        <body name="shin_right" pos="0 0 -0.4">
+          <joint name="knee_right" type="hinge" pos="0 0 0" axis="1 0 0" range="-60 10"/>
+          <inertial pos="0 0 -0.2" mass="1" diaginertia="0.03 0.03 0.03"/>
+          <geom name="shin_right_geom" type="capsule" fromto="0 0 0 0 0 -0.35" size="0.04" rgba="0.6 0.8 0.6 1"/>
+          
+          <!-- Правая стопа -->
+          <body name="foot_right" pos="0 0 -0.35">
+            <joint name="ankle_right" type="hinge" pos="0 0 0" axis="1 0 0" range="-20 20"/>
+            <geom name="foot_right_geom" type="capsule" fromto="-0.05 0 0 0.05 0 0" size="0.03" rgba="0.8 0.8 0.2 1"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  
+  <actuator>
+    <!-- Левая нога -->
+    <motor name="hip_left_motor" joint="hip_left" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
+    <motor name="knee_left_motor" joint="knee_left" gear="40" ctrllimited="true" ctrlrange="-1 1"/>
+    <motor name="ankle_left_motor" joint="ankle_left" gear="20" ctrllimited="true" ctrlrange="-0.5 0.5"/>
+    
+    <!-- Правая нога -->
+    <motor name="hip_right_motor" joint="hip_right" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
+    <motor name="knee_right_motor" joint="knee_right" gear="40" ctrllimited="true" ctrlrange="-1 1"/>
+    <motor name="ankle_right_motor" joint="ankle_right" gear="20" ctrllimited="true" ctrlrange="-0.5 0.5"/>
+  </actuator>
+</mujoco>

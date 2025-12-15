@@ -17,3 +17,6 @@ pip-wheel-metadata/
 .idea/
 *.swp
 *~
+
+loco-mujoco/
+datasets/
