@@ -6,7 +6,7 @@ from stable_baselines3 import PPO
 import time
 
 class BipedEnv(gym.Env):
-    def __init__(self, xml_path="biped.xml", render=True):
+    def __init__(self, xml_path="biped_foots.xml", render=True):
         self.model = mujoco.MjModel.from_xml_path(xml_path)
         self.model.opt.timestep = 0.002
         self.data = mujoco.MjData(self.model)
@@ -69,8 +69,8 @@ class BipedEnv(gym.Env):
         self.data.qpos[2] = 0.52
         self.data.qpos[9] = -0.6
         self.data.qpos[10] = 1.0
-        self.data.qpos[13] = -0.6
-        self.data.qpos[14] = 1.0
+        self.data.qpos[14] = -0.6
+        self.data.qpos[15] = 1.0
 
         self.data.qvel[:] = 0.0
 
@@ -88,7 +88,7 @@ class BipedEnv(gym.Env):
 
 if __name__ == "__main__":
     
-    env = BipedEnv("biped.xml", render=True)
+    env = BipedEnv("biped_foots.xml", render=True)
     
     model = PPO(
         "MlpPolicy",
@@ -106,13 +106,13 @@ if __name__ == "__main__":
         
     try:
         model.learn(
-            total_timesteps=100000,
+            total_timesteps=10000,
             progress_bar=True
         )
     except KeyboardInterrupt:
         env.close()
     
-    model.save("biped_trained")
+    model.save("biped_foots_trained")
         
     obs, _ = env.reset()
     total_reward = 0

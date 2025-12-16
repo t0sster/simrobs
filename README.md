@@ -10,3 +10,5 @@
 
 ## Launch guide
 
+- training: 
+

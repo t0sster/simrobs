@@ -12,10 +12,10 @@
     <light pos="0 2 3" dir="0 -1 -1"/>
     <geom name="floor" type="plane" size="10 10 0.1" rgba="0.8 0.9 0.8 1"/>
     
-    <!-- Torso -->
-    <body name="torso" pos="0 0 0.57">
-      <freejoint/>
-      <inertial pos="0 0.05 0" mass="5" diaginertia="0.1 0.1 0.1"/>
+    <!-- Торс -->
+    <body name="torso" pos="0 0 0.55">
+      <freejoint/>  <!-- Вместо joint type="free" -->
+      <inertial pos="0 0 0" mass="5" diaginertia="0.1 0.1 0.1"/>
       <geom name="torso_middle_geom" type="box" size="0.1 0.1 0.02" rgba="0.7 0.2 0.2 1"/>
       <geom name="torso_front_geom" type="box" size="0.1 0.015 0.04" pos="0 0.115 -0.025" rgba="0.7 0.2 0.2 1"/>
       
@@ -43,8 +43,15 @@
               <joint name="knee_right_x_joint" type="hinge" pos="0 0 0" axis="1 0 0" range="-30 90"/>
               <inertial pos="0 0 0" mass="1" diaginertia="0.05 0.05 0.05"/>
               <geom name="knee_right_x_geom" type="cylinder" fromto="0 0 0 0.03 0 0" size="0.04" rgba="0.6 0.6 0.8 1"/>
-              <geom name="knee_right_calve" type="box" pos="0.015 0 -0.1" size="0.01 0.01 0.1" rgba="0 0.6 0.8 1"/>
-              <geom name="knee_right_sole" type="sphere" pos="0.015 0 -0.2" size="0.02" rgba="0.6 0 0.8 1"/>
+              <geom name="knee_right_calve" type="box" pos="0.015 0 -0.075" size="0.005 0.025 0.075" rgba="0 0.6 0.8 1"/>
+            
+              <!-- Right foot -->
+              <body name="foot_right_x" pos="0 0 -0.15">
+                <joint name="foot_right_x_joint" type="hinge" pos="0 0 0" axis="1 0 0" range="-60 60"/>
+                <inertial pos="0 0 0" mass="1" diaginertia="0.05 0.05 0.05"/>
+                <geom name="foot_right_x_geom" type="cylinder" fromto="0 0 0 0.03 0 0" size="0.03" rgba="0.6 0.6 0.8 1"/>
+                <geom name="foot_right_heel" type="box" pos="0.015 0 -0.03" size="0.015 0.05 0.01" rgba="0 0.6 0.8 1"/>
+              </body>
             </body>
           </body>
         </body>
@@ -74,8 +81,15 @@
               <joint name="knee_left_x_joint" type="hinge" pos="0 0 0" axis="1 0 0" range="-30 90"/>
               <inertial pos="0 0 0" mass="1" diaginertia="0.05 0.05 0.05"/>
               <geom name="knee_left_x_geom" type="cylinder" fromto="0 0 0 -0.03 0 0" size="0.04" rgba="0.6 0.6 0.8 1"/>
-              <geom name="knee_left_calve" type="box" pos="-0.015 0 -0.1" size="0.01 0.01 0.1" rgba="0 0.6 0.8 1"/>
-              <geom name="knee_left_sole" type="sphere" pos="-0.015 0 -0.2" size="0.02" rgba="0.6 0 0.8 1"/>
+              <geom name="knee_left_calve" type="box" pos="-0.015 0 -0.075" size="0.005 0.025 0.075" rgba="0 0.6 0.8 1"/>
+            
+              <!-- Left foot -->
+              <body name="foot_left_x" pos="0 0 -0.15">
+                <joint name="foot_left_x_joint" type="hinge" pos="0 0 0" axis="1 0 0" range="-60 60"/>
+                <inertial pos="0 0 0" mass="1" diaginertia="0.05 0.05 0.05"/>
+                <geom name="foot_left_x_geom" type="cylinder" fromto="0 0 0 -0.03 0 0" size="0.03" rgba="0.6 0.6 0.8 1"/>
+                <geom name="foot_left_heel" type="box" pos="-0.015 0 -0.03" size="0.015 0.05 0.01" rgba="0 0.6 0.8 1"/>
+              </body>
             </body>
           </body>
         </body>
@@ -89,11 +103,14 @@
     <motor name="hip_right_y_motor" joint="hip_right_y_joint" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
     <motor name="hip_right_x_motor" joint="hip_right_x_joint" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
     <motor name="knee_right_x_motor" joint="knee_right_x_joint" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
+    <motor name="foot_right_x_motor" joint="foot_right_x_joint" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
 
     <motor name="hip_left_z_motor" joint="hip_left_z_joint" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
     <motor name="hip_left_y_motor" joint="hip_left_y_joint" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
     <motor name="hip_left_x_motor" joint="hip_left_x_joint" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
     <motor name="knee_left_x_motor" joint="knee_left_x_joint" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
+    <motor name="foot_left_x_motor" joint="foot_left_x_joint" gear="50" ctrllimited="true" ctrlrange="-1 1"/>
   </actuator>
+
 
 </mujoco>

@@ -10,6 +10,8 @@ class BipedEnv(gym.Env):
         self.model = mujoco.MjModel.from_xml_path(xml_path)
         self.model.opt.timestep = 0.002
         self.data = mujoco.MjData(self.model)
+
+        self.prev_y_pos = 0
         
         self.action_space = spaces.Box(
             low=-1.0, high=1.0, 
@@ -31,7 +33,6 @@ class BipedEnv(gym.Env):
     
     def _init_viewer(self):
         import mujoco.viewer
-        print("Инициализация окна визуализации...")
         self.viewer = mujoco.viewer.launch_passive(
             self.model, 
             self.data,
@@ -51,21 +52,29 @@ class BipedEnv(gym.Env):
             time.sleep(0.01)
         
         obs = np.concatenate([self.data.qpos, self.data.qvel])
-        forward_vel = self.data.qvel[0]
+        forward_vel = self.data.qvel[1]
         height = self.data.qpos[2]
+        y_pos = self.data.qpos[0]
         
-        reward = forward_vel + (1.0 if height > 0.7 else 0.0)
-        terminated = height < 0.6
-        
+        reward = 0.5 * forward_vel + (0.2 if 0.45 < height < 0.6 else -1.0) - 0.5 * (
+            np.abs(self.data.qvel[0]) + np.abs(self.data.qvel[2]))
+        reward = reward * 0.5 + (y_pos - self.prev_y_pos) * 0.5
+        self.prev_y_pos = y_pos
+        terminated = height < 0.4 or height > 0.6
+
         return obs, reward, terminated, False, {}
     
     def reset(self, seed=None, options=None):
         mujoco.mj_resetData(self.model, self.data)
-        self.data.qpos[2] = 0.8
-        self.data.qpos[7] = 0.0   # левое колено
-        self.data.qpos[10] = 0.0  # правое колено
 
-        # Обнули скорости
+        noise_scale = 0.05
+
+        self.data.qpos[2] = 0.52
+        self.data.qpos[9] = -0.6 + np.random.uniform(-noise_scale, noise_scale)
+        self.data.qpos[10] = 1.0 + np.random.uniform(-noise_scale, noise_scale)
+        self.data.qpos[13] = -0.6 + np.random.uniform(-noise_scale, noise_scale)
+        self.data.qpos[14] = 1.0 + np.random.uniform(-noise_scale, noise_scale)
+
         self.data.qvel[:] = 0.0
 
         mujoco.mj_forward(self.model, self.data)
@@ -79,32 +88,15 @@ class BipedEnv(gym.Env):
         if self.viewer:
             self.viewer.close()
 
-# ТОЛЬКО ВИЗУАЛИЗАЦИЯ ОБУЧЕННОЙ МОДЕЛИ
 if __name__ == "__main__":
-    print("="*60)
-    print("Визуализация обученной модели")
-    print("="*60)
     
-    # Создаем среду
     env = BipedEnv("biped.xml", render=True)
     
-    # Загружаем обученную модель
     try:
-        model = PPO.load("biped_trained")
-        print("Модель 'biped_trained.zip' загружена")
+        model = PPO.load("biped_trained_100k")
     except:
-        print("Ошибка: файл 'biped_trained.zip' не найден!")
-        print("Сначала обучите модель с помощью main_script.py")
         env.close()
         exit()
-    
-    # Визуализация
-    print("\nНачинаю визуализацию...")
-    print("Закройте окно MuJoCo для остановки")
-    print("\nУправление:")
-    print("- Нажмите Ctrl+C в терминале для выхода")
-    print("- Или закройте окно MuJoCo")
-    print("="*60)
     
     obs, _ = env.reset()
     total_reward = 0
@@ -119,11 +111,11 @@ if __name__ == "__main__":
             if terminated:
                 episode += 1
                 print(f"Эпизод {episode}: награда = {total_reward:.1f}")
+                # print(env.data.qpos[0:3])
                 obs, _ = env.reset()
                 total_reward = 0
                 
     except KeyboardInterrupt:
-        print("\nВизуализация остановлена пользователем")
+        env.close()
     
     env.close()
-    print("Программа завершена")
